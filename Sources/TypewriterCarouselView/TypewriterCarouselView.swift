@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TypewriterCarouselView: View {
+public struct TypewriterCarouselView: View {
 
   @State var text: [String]
   @State private var currentText: String?
@@ -18,7 +18,7 @@ struct TypewriterCarouselView: View {
   var onDeletingFinishedDelay: Duration = .seconds(1)
   var mode: TypewriterView.Mode = .writeAndDelete
 
-  var body: some View {
+  public var body: some View {
     TypewriterView(
       text: currentText,
       typingDelay: typingDelay,

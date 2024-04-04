@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TypewriterView: View {
+public struct TypewriterView: View {
   
   enum Mode {
     case write, writeAndDelete
@@ -23,7 +23,7 @@ struct TypewriterView: View {
   @State private var animatedText: AttributedString = ""
   @State private var typingTask: Task<Void, Error>?
   
-  var body: some View {
+  public var body: some View {
     Text(animatedText)
       .onChange(of: text, perform: { _ in animateText() })
       .onAppear { animateText() }
