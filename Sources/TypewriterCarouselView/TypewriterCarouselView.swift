@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// A text view that cycles through multiple texts, animated with a typewriter effect.
+/// A view that cycles through multiple texts, animated with a typewriter effect.
 public struct TypewriterCarouselView: View {
 
   var text: [String]
@@ -44,7 +44,14 @@ public struct TypewriterCarouselView: View {
 }
 
 #Preview {
-  TypewriterCarouselView(text: ["Hello", "World!"])
+  TypewriterCarouselView(
+    text: ["Hello", "World!"],
+    speed: .milliseconds(50),
+    mode: .writeAndDelete(
+      onWriteFinishedDelay: .seconds(3),
+      onDeleteFinishedDelay: .seconds(1)
+    )
+  )
     .font(.title)
     .padding()
 }
