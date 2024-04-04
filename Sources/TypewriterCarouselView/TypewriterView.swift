@@ -7,14 +7,16 @@
 
 import SwiftUI
 
-/// A text view that animates with a typewriter effect.
+/// A view that animates text with a typewriter effect.
 public struct TypewriterView: View {
   
   /// The animation modes.
   public enum Mode {
     
     /// Mode for only animating the write effect. Text will remain visible after the animation is finished.
-    case write
+    /// - Parameters
+    ///   - onWriteFinishedDelay: Duration of the delay at the end of the text being written.
+    case write(onWriteFinishedDelay: Duration)
     
     /// Mode for animating both the write and delete effect. The text will not remain visible after the animation is finished.
     ///
@@ -83,13 +85,14 @@ public struct TypewriterView: View {
       }
 
       switch mode {
-      case .write: onComplete()
+      case .write(let writeFinishedDelay):
+        try await Task.sleep(for: writeFinishedDelay)
+        onComplete()
 
       case .writeAndDelete(let writeFinishedDelay, let deleteFinishedDelay):
         try await Task.sleep(for: writeFinishedDelay)
         
         index = animatedText.endIndex
-
         while index > animatedText.startIndex {
           try Task.checkCancellation()
 
@@ -112,7 +115,16 @@ public struct TypewriterView: View {
 }
 
 #Preview {
-  TypewriterView(text: "Hello World!")
+  TypewriterView(
+    text: "Hello World!",
+    speed: .milliseconds(50),
+    mode: .writeAndDelete(
+      onWriteFinishedDelay: .seconds(3),
+      onDeleteFinishedDelay: .seconds(1)
+    )
+  ) {
+    print("Animation finished!")
+  }
     .font(.title)
     .padding()
 }
