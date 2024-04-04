@@ -12,6 +12,8 @@ A SwiftUI library for rendering text with a typewriter effect.
   <img src="https://img.shields.io/badge/-SwiftUI-red.svg" />
 </p>
 
+https://github.com/itstheceo/TypewriterCarouselView/assets/5218201/4ede9810-4d13-4295-8c7a-62a30088b23b
+
 ## Installation
 This repository is a Swift package; include it in your Xcode project and target under **File > Add package dependencies**, 
 then `import TypewriterCarouselView` where you'll be using it.
@@ -22,7 +24,7 @@ Two views are available for use, `TypewriterCarouselView` and `TypewriterView`.
 ### TypewriterCarouselView
 A view that cycles through multiple texts, animated with a typewriter effect.
 
-```
+```swift
 TypewriterCarouselView(
   text: ["Hello", "World!"],
   speed: .milliseconds(50),
@@ -36,7 +38,7 @@ TypewriterCarouselView(
 ### TypewriterView
 A view that animates text with a typewriter effect.
 
-```
+```swift
 TypewriterView(
   text: "Hello World!",
   speed: .milliseconds(50),
@@ -50,8 +52,10 @@ TypewriterView(
 ```
 
 ## Todo
-Add support for other platforms, and reduce minimum supported versions where possible (pull requests welcome!).
-As my current use case allows for the current support, I do not know when I will get around to doing this.
+* Add support for other platforms.
+* Reduce minimum supported platform versions, where possible.
+
+As my use case allows for the current support, I do not know when I will get around to doing this. Pull requests welcome.
 
 ## Questions
 If you have any questions or suggestions, you can create an issue or pull request on this GitHub repository.
