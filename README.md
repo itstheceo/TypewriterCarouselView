@@ -1,4 +1,10 @@
-# TypewriterCarouselView
+<h1> TypewriterCarouselView
+  <picture>
+  <source srcset="https://github.com/itstheceo/TypewriterCarouselView/blob/assets/icon.png?raw=true">
+    <img align="right" alt="Project logo" src="../assets/icon.png" width=74px>
+  </picture>
+</h1>
+
 A SwiftUI library for rendering text with a typewriter effect.
 
 <p>
