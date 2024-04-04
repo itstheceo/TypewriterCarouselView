@@ -7,21 +7,47 @@
 
 import SwiftUI
 
+/// A text view that animates with a typewriter effect.
 public struct TypewriterView: View {
   
-  enum Mode {
-    case write, writeAndDelete
+  /// The animation modes.
+  public enum Mode {
+    
+    /// Mode for only animating the write effect. Text will remain visible after the animation is finished.
+    case write
+    
+    /// Mode for animating both the write and delete effect. The text will not remain visible after the animation is finished.
+    ///
+    /// - Parameters
+    ///   - onWriteFinishedDelay: Duration of the delay at the end of the text being written.
+    ///   - onDeleteFinishedDelay: Duration of the delay at the end of the text being deleted.
+    case writeAndDelete(onWriteFinishedDelay: Duration, onDeleteFinishedDelay: Duration)
   }
   
   var text: String?
-  var typingDelay: Duration = .milliseconds(50)
-  var onTypingFinished: (() -> Void) = {}
-  var onWritingFinishedDelay: Duration = .seconds(5)
-  var onDeletingFinishedDelay: Duration = .seconds(1)
-  var mode: Mode = .writeAndDelete
+  var speed: Duration
+  var mode: Mode
+  var onComplete: (() -> Void)
   
   @State private var animatedText: AttributedString = ""
   @State private var typingTask: Task<Void, Error>?
+  
+  /// - Parameters
+  ///   - text: Text to display.
+  ///   - speed: Speed of the typing animation.
+  ///   - mode: Mode of the animation.
+  ///   - onComplete: Callback to run when the typing animation has finished.
+  public init(
+    text: String? = nil,
+    speed: Duration = .milliseconds(50),
+    mode: Mode = .writeAndDelete(onWriteFinishedDelay: .seconds(3), onDeleteFinishedDelay: .seconds(1)),
+    onComplete: @escaping () -> Void = {}
+  ) {
+    self.text = text
+    self.speed = speed
+    self.mode = mode
+    self.onComplete = onComplete
+  }
   
   public var body: some View {
     Text(animatedText)
@@ -33,7 +59,7 @@ public struct TypewriterView: View {
     typingTask?.cancel()
 
     guard let text = text else {
-      onTypingFinished()
+      onComplete()
       return
     }
 
@@ -48,24 +74,20 @@ public struct TypewriterView: View {
       while index < animatedText.endIndex {
         try Task.checkCancellation()
 
-        // Update the style
         animatedText[animatedText.startIndex...index]
           .setAttributes(defaultAttributes)
 
-        // Wait
-        try await Task.sleep(for: typingDelay)
+        try await Task.sleep(for: speed)
 
-        // Advance the index, character by character
         index = animatedText.index(afterCharacter: index)
       }
 
-      // Wait
-      try await Task.sleep(for: onWritingFinishedDelay)
-
       switch mode {
-      case .write: onTypingFinished()
+      case .write: onComplete()
 
-      case .writeAndDelete:
+      case .writeAndDelete(let writeFinishedDelay, let deleteFinishedDelay):
+        try await Task.sleep(for: writeFinishedDelay)
+        
         index = animatedText.endIndex
 
         while index > animatedText.startIndex {
@@ -74,16 +96,16 @@ public struct TypewriterView: View {
           animatedText[index..<animatedText.endIndex]
             .setAttributes(defaultAttributes.foregroundColor(.clear))
 
-          try await Task.sleep(for: typingDelay)
+          try await Task.sleep(for: speed)
 
           index = animatedText.index(beforeCharacter: index)
         }
 
         animatedText.setAttributes(defaultAttributes.foregroundColor(.clear))
 
-        try await Task.sleep(for: onDeletingFinishedDelay)
+        try await Task.sleep(for: deleteFinishedDelay)
 
-        onTypingFinished()
+        onComplete()
       }
     }
   }
@@ -91,4 +113,6 @@ public struct TypewriterView: View {
 
 #Preview {
   TypewriterView(text: "Hello World!")
+    .font(.title)
+    .padding()
 }
